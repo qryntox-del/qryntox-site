@@ -1,0 +1,2 @@
+When the project is updated
+- Check whether it is necessary to update the corresponding `trickle/notes/README.md` content to reflect new features, architectural changes, or significant styling updates.
