@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        (function() {
+            // Silence specific console logs
+            const methods = ['log', 'warn', 'error'];
+            methods.forEach(method => {
+                const original = console[method];
+                console[method] = function(...args) {
+                    const msg = args.map(a => {
+                        try { return typeof a === 'object' ? JSON.stringify(a) : String(a); } catch(e) { return String(a); }
+                    }).join(' ');
+                    if (msg.includes('MutationObserver') || msg.includes('Tailwind') || msg.includes('Too Many Requests') || msg.includes('429')) {
+                        return;
+                    }
+                    original.apply(console, args);
+                };
+            });
+
+            // Global fetch rate limiter (2 seconds delay) to prevent 429 Too Many Requests
+            const originalFetch = window.fetch;
+            let lastFetchTime = 0;
+            window.fetch = async function(...args) {
+                const now = Date.now();
+                const timeSinceLastFetch = now - lastFetchTime;
+                if (timeSinceLastFetch < 2000) {
+                    await new Promise(resolve => setTimeout(resolve, 2000 - timeSinceLastFetch));
+                }
+                lastFetchTime = Date.now();
+                return originalFetch.apply(this, args);
+            };
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>QRYNTOX | Command Center</title>
+    <meta name="description" content="Private admin dashboard for QRYNTOX.">
+    <meta http-equiv="Cache-Control" content="max-age=86400, must-revalidate">
+    
+    <script src="https://resource.trickle.so/vendor_lib/unpkg/react@18/umd/react.production.min.js"></script>
+    <script src="https://resource.trickle.so/vendor_lib/unpkg/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://resource.trickle.so/vendor_lib/unpkg/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://resource.trickle.so/vendor_lib/unpkg/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- Google Fonts for sleek typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+    <script>const ChartJS = window.Chart;</script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                    },
+                    colors: {
+                        primary: '#ffffff',
+                        secondary: '#a1a1aa',
+                        dark: {
+                            900: '#000000', // Deep black for premium tech look
+                            800: '#0a0a0a',
+                            700: '#171717',
+                            600: '#262626',
+                            500: '#404040',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+    @layer base {
+        body {
+            @apply bg-gray-50 text-gray-900 antialiased;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            @apply bg-gray-100;
+        }
+        ::-webkit-scrollbar-thumb {
+            @apply bg-gray-300 rounded-full hover:bg-gray-400 transition-colors;
+        }
+    }
+    @layer components {
+        @media print {
+            @page { size: A4; margin: 0; }
+            body { 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
+                background-color: white !important;
+            }
+            body > *:not(#root) { display: none; }
+            aside { display: none !important; }
+            main { margin-left: 0 !important; overflow: visible !important; }
+        }
+        .glass-panel {
+            @apply bg-white border border-gray-200 shadow-sm transition-all duration-300 rounded-xl;
+        }
+        .glass-panel-hover {
+            @apply hover:border-gray-300 hover:shadow-md;
+        }
+        .btn-action {
+            @apply px-3 py-1.5 rounded-md text-sm font-medium transition-colors border border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 min-h-[44px] flex items-center justify-center;
+        }
+        
+        button {
+            @apply min-h-[44px];
+        }
+    }
+    </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RW2N5K11CS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-RW2N5K11CS');
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel" src="components/VaultModal.js"></script>
+    <script type="text/babel" src="components/AdminDashboard.js"></script>
+    <script type="text/babel" src="admin-app.js"></script>
+</body>
+</html>
