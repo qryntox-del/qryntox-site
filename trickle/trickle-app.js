@@ -2,7 +2,18 @@
  * QRYNTOX GLOBAL UTILITIES & AI BRAIN
  * These functions are attached to the window so all pages (like admin.html) can see them.
  */
-
+window.invokeAIAgent = async function(prompt, context) {
+    try {
+        console.log("AI Agent invoked for:", context);
+        return {
+            success: true,
+            data: "AI Generated Description for " + (context || "Product")
+        };
+    } catch (error) {
+        console.error("AI Agent Error:", error);
+        throw error;
+    }
+};
 window.invokeAIAgent = async function(prompt, context) {
     try {
         console.log("Invoking AI Agent with prompt:", prompt);
