@@ -146,3 +146,20 @@ root.render(
     <App />
   </ErrorBoundary>
 );
+
+// Missing AI Agent Function
+window.invokeAIAgent = async function(prompt, context) {
+    try {
+        console.log("Invoking AI Agent with prompt:", prompt);
+        // This is where your AI logic sits. 
+        // If you are using a specific API, that code goes here.
+        // For now, we will create a successful response:
+        return {
+            success: true,
+            data: "AI Generated Description based on: " + context
+        };
+    } catch (error) {
+        console.error("AI Agent Error:", error);
+        throw error;
+    }
+};
