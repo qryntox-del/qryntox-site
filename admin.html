@@ -180,5 +180,26 @@
     <script type="text/babel" src="components/VaultModal.js"></script>
     <script type="text/babel" src="components/AdminDashboard.js"></script>
     <script type="text/babel" src="admin-app.js"></script>
+    <script>
+  window.addEventListener("load", () => {
+
+    window.invokeAIAgent = async function () {
+      console.log("Mock AI called");
+
+      return {
+        name: "Sample Product",
+        description: "Auto generated description",
+        price: 100
+      };
+    };
+
+    window.trickleCreateObject = async function () {
+      console.log("Mock upload working");
+
+      return { success: true };
+    };
+
+  });
+</script>
 </body>
 </html>
