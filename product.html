@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        (function() {
+            // Silence specific console logs
+            const methods = ['log', 'warn', 'error'];
+            methods.forEach(method => {
+                const original = console[method];
+                console[method] = function(...args) {
+                    const msg = args.map(a => {
+                        try { return typeof a === 'object' ? JSON.stringify(a) : String(a); } catch(e) { return String(a); }
+                    }).join(' ');
+                    if (msg.includes('MutationObserver') || msg.includes('Tailwind') || msg.includes('Too Many Requests') || msg.includes('429')) {
+                        return;
+                    }
+                    original.apply(console, args);
+                };
+            });
+
+            // Global fetch rate limiter (2 seconds delay) to prevent 429 Too Many Requests
+            const originalFetch = window.fetch;
+            let lastFetchTime = 0;
+            window.fetch = async function(...args) {
+                const now = Date.now();
+                const timeSinceLastFetch = now - lastFetchTime;
+                if (timeSinceLastFetch < 2000) {
+                    await new Promise(resolve => setTimeout(resolve, 2000 - timeSinceLastFetch));
+                }
+                lastFetchTime = Date.now();
+                return originalFetch.apply(this, args);
+            };
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>QRYNTOX | Product Details</title>
+    <meta http-equiv="Cache-Control" content="max-age=86400, must-revalidate">
+    
+    <script src="https://resource.trickle.so/vendor_lib/unpkg/react@18/umd/react.production.min.js"></script>
+    <script src="https://resource.trickle.so/vendor_lib/unpkg/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://resource.trickle.so/vendor_lib/unpkg/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://resource.trickle.so/vendor_lib/unpkg/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['"Cormorant Garamond"', 'serif']
+                    },
+                    colors: { primary: '#000000', secondary: '#888888', dark: { 900: '#ffffff', 800: '#f4f4f5', 700: '#e4e4e7', 600: '#d4d4d8' } },
+                    keyframes: {
+                        shake: {
+                            '0%, 100%': { transform: 'translateX(0)' },
+                            '25%': { transform: 'translateX(-5px)' },
+                            '75%': { transform: 'translateX(5px)' }
+                        }
+                    },
+                    animation: {
+                        'shake': 'shake 0.4s ease-in-out'
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+    @layer base { body { @apply bg-white text-[#111111] antialiased min-h-screen; overflow-x: hidden; } }
+    @layer components { 
+        .btn { @apply px-6 py-4 md:py-3 rounded-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 min-h-[44px]; }
+        .btn-primary { @apply bg-black text-white uppercase tracking-widest shadow-md hover:shadow-lg hover:-translate-y-0.5 text-xs; }
+        .btn-outline { @apply border border-gray-300 text-black hover:border-black uppercase tracking-widest text-xs; }
+        .glass-panel { @apply bg-white/50 backdrop-blur-lg border border-white/60 shadow-sm rounded-sm; }
+        
+        .btn-gold {
+            background-image: 
+                linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 40%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0.2) 100%),
+                linear-gradient(135deg, #fef44b 0%, #daa22f 100%);
+            border: 1px solid #c7952a;
+            border-radius: 5px;
+            box-shadow: 
+                inset 0 1px 1px rgba(255,255,255,0.6),
+                inset 0 -1px 1px rgba(100,50,0,0.4),
+                0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            color: #433010;
+            text-transform: uppercase;
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
+        }
+        
+        .btn-gold::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            transition: none;
+        }
+        
+        .btn-gold:hover {
+            background-image: 
+                linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 40%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.1) 100%),
+                linear-gradient(135deg, #fff875 0%, #e5b03f 100%);
+            transform: scale(1.02);
+            box-shadow: 
+                inset 0 1px 2px rgba(255,255,255,0.8),
+                inset 0 -1px 1px rgba(100,50,0,0.4),
+                0 6px 12px -2px rgba(0, 0, 0, 0.4);
+            border-color: #d1a53a;
+        }
+        
+        .btn-gold:hover::before {
+            animation: shimmer 1.5s infinite;
+        }
+    }
+    
+    @layer utilities {
+        @keyframes shimmer {
+            100% { left: 200%; }
+        }
+    }
+    </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RW2N5K11CS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-RW2N5K11CS');
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel" src="utils/cartManager.js"></script>
+    <script type="text/babel" src="utils/config.js"></script>
+    <script type="text/babel" src="components/VaultModal.js"></script>
+    <script type="text/babel" src="components/Header.js"></script>
+    <script type="text/babel" src="components/CartDrawer.js"></script>
+    <script type="text/babel" src="components/Footer.js"></script>
+    <script type="text/babel" src="components/ProductDetail.js"></script>
+    <script type="text/babel" src="product-app.js"></script>
+</body>
+</html>
