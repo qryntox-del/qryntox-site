@@ -1,4 +1,5 @@
-
+import { db } from "./firebase.js";
+import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 // Bulletproof error suppression for network drops and HTML payload parsing errors
 const isSuppressedError = (err) => {
     const msg = String(err && err.message ? err.message : err).toLowerCase();
