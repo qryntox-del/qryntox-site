@@ -2,7 +2,7 @@ import { db } from "./firebase.js";
 import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 async function saveProduct(product) {
   try {
-    await addDoc(collection(db, "products"), product);
+    window.saveProduct = async function(product) {
     alert("✅ Product saved!");
   } catch (e) {
     console.error(e);
