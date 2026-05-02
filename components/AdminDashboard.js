@@ -207,40 +207,26 @@ function AdminDashboard() {
 
     const userId = 'override-bypass-id';
     
-    const syncData = React.useCallback(async (tab, abortSignal) => {
-        setLoading(true);
+  const syncData = React.useCallback(async (tab, abortSignal) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+        let allOrders = [];
+        let allReturns = [];
+
+        setOrders(allOrders);
+        setReturnRequests(allReturns);
+        setCustomerInquiries([]);
+
+    } catch (err) {
+        console.warn("Database sync error:", err);
         setError(null);
-        
-        try {
-            if (window.trickleListObjects) {
-                try {
-                    const subs = await window.trickleListObjects('submissions', 100, true, undefined);
-                    setSubmissions(subs?.items || []);
-                } catch(e) { console.warn("Submissions sync error:", e); }
+    } finally {
+        setLoading(false);
+    }
 
-                let allOrders = [];
-                try {
-                    const legacyOrds = await window.trickleListObjects('orders', 100, true, undefined);
-                    allOrders = legacyOrds?.items || [];
-                } catch(e) { console.warn("Orders sync error:", e); }
-                
-                let allReturns = [];
-                try {
-                    const legacyRets = await window.trickleListObjects('returns', 100, true, undefined);
-                    allReturns = legacyRets?.items || [];
-                } catch(e) { console.warn("Returns sync error:", e); }
-
-                setOrders(allOrders);
-                setReturnRequests(allReturns);
-            }
-            setCustomerInquiries([]); 
-        } catch (err) {
-            console.warn("Database sync error:", err);
-            setError(null); // Suppress UI errors
-        } finally {
-            setLoading(false);
-        }
-    }, [userId]);
+}, [userId]);
 
     React.useEffect(() => {
         const abortController = new AbortController();
