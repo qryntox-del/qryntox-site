@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB6s2DenrYzPA5GHd4ORfN2odKrBh6DqJ0",
+  apiKey: "AIzaSyDTofnNErNgrtAwdR8k-bc9LCmeMJ1UZ6g",
   authDomain: "qryntox-web.firebaseapp.com",
   projectId: "qryntox-web",
   storageBucket: "qryntox-web.firebasestorage.app",
