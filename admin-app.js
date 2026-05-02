@@ -1,14 +1,16 @@
 import { db } from "./firebase.js";
 import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-async function saveProduct(product) {
+
+// ✅ GLOBAL function (IMPORTANT)
+window.saveProduct = async function(product) {
   try {
-    window.saveProduct = async function(product) {
+    await addDoc(collection(db, "products"), product);
     alert("✅ Product saved!");
   } catch (e) {
     console.error(e);
     alert("❌ Save failed");
   }
-}
+};
 // Bulletproof error suppression for network drops and HTML payload parsing errors
 const isSuppressedError = (err) => {
     const msg = String(err && err.message ? err.message : err).toLowerCase();
