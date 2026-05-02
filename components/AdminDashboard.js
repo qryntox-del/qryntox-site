@@ -495,13 +495,11 @@ function AdminDashboard() {
                 care: String(formData.care || '')
             };
 
-            if (editingProduct) {
-                await window.trickleUpdateObject('products', editingProduct.objectId, saveObj);
-                setProducts(products.map(p => p.objectId === editingProduct.objectId ? { ...p, objectData: saveObj } : p));
-            } else {
-                const newObj = await window.trickleCreateObject('products', saveObj);
-                setProducts([newObj, ...products]);
-            }
+           if (editingProduct) {
+    alert("Edit not implemented yet");
+} else {
+    await saveProduct(saveObj);
+}
             window.dispatchEvent(new Event('productsUpdated'));
             setToastMessage('Product successfully saved');
         } catch (err) {
